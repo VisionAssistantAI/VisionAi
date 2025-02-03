@@ -115,7 +115,7 @@
             <option value="South Africa">South Africa</option>
           </select>
         </div>
-        
+
         <!-- Security Questions -->
         <div class="form-group">
           <label for="security1">Security Question 1</label>
@@ -198,7 +198,7 @@
       };
 
       try {
-        const response = await fetch('/register', {
+        const response = await fetch('https://visionserver.onrender.com/clients.json', {  // Update URL
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
