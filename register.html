@@ -87,6 +87,10 @@
     .button:hover {
       background-color: #FFC107;
     }
+    .button:disabled {
+      background-color: #666;
+      cursor: not-allowed;
+    }
   </style>
 </head>
 <body>
@@ -119,7 +123,7 @@
         <!-- Security Questions -->
         <div class="form-group">
           <label for="security1">Security Question 1</label>
-          <select id="security1" name="question1">
+          <select id="security1" name="question1" required>
             <option value="What is your mother’s maiden name?">What is your mother’s maiden name?</option>
             <option value="What was the name of your first school?">What was the name of your first school?</option>
             <option value="What city were you born in?">What city were you born in?</option>
@@ -129,7 +133,7 @@
 
         <div class="form-group">
           <label for="security2">Security Question 2</label>
-          <select id="security2" name="question2">
+          <select id="security2" name="question2" required>
             <option value="What was the name of your first pet?">What was the name of your first pet?</option>
             <option value="What is your favorite book?">What is your favorite book?</option>
             <option value="Who was your childhood hero?">Who was your childhood hero?</option>
@@ -139,7 +143,7 @@
 
         <div class="form-group">
           <label for="security3">Security Question 3</label>
-          <select id="security3" name="question3">
+          <select id="security3" name="question3" required>
             <option value="What was the make of your first car?">What was the make of your first car?</option>
             <option value="What was your dream job as a child?">What was your dream job as a child?</option>
             <option value="What is the name of your favorite teacher?">What is the name of your favorite teacher?</option>
@@ -166,7 +170,7 @@
   </div>
 
   <script>
-    // Light/Dark mode persistence
+    // Theme persistence
     document.addEventListener("DOMContentLoaded", () => {
       const mode = localStorage.getItem("themeMode");
       if (mode === "light") {
@@ -179,39 +183,43 @@
       }
     });
 
-    // Form submission
-    document.getElementById('registrationForm').addEventListener('submit', async (event) => {
-      event.preventDefault();
-
-      const formData = new FormData(event.target);
-
-      // Build the payload so that each security question is sent only once
-      const payload = {
-        email: formData.get('email'),
-        password: formData.get('password'),
-        region: formData.get('region'),
-        answers: [
-          { question: formData.get('question1'), answer: formData.get('answer1') },
-          { question: formData.get('question2'), answer: formData.get('answer2') },
-          { question: formData.get('question3'), answer: formData.get('answer3') }
-        ]
-      };
-
+    // Form handling
+    document.getElementById('registrationForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const button = form.querySelector('button');
+      
       try {
-        const response = await fetch('https://visionserver.onrender.com/register', {  // Corrected URL
+        button.disabled = true;
+        button.textContent = 'Processing...';
+
+        const formData = {
+          email: form.email.value,
+          password: form.password.value,
+          region: form.region.value,
+          answers: [
+            { question: form.question1.value, answer: form.answer1.value },
+            { question: form.question2.value, answer: form.answer2.value },
+            { question: form.question3.value, answer: form.answer3.value }
+          ]
+        };
+
+        const response = await fetch('https://visionserver.onrender.com/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
+          body: JSON.stringify(formData)
         });
 
-        if (response.ok) {
-          alert('Registration successful!');
-          window.location.href = '/';
-        } else {
-          alert('Error: ' + await response.text());
-        }
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || 'Registration failed');
+
+        alert('Account created successfully!');
+        window.location.href = '/';
       } catch (error) {
-        alert('An unexpected error occurred.');
+        alert(error.message || 'Registration failed. Please try again.');
+      } finally {
+        button.disabled = false;
+        button.textContent = 'Register';
       }
     });
   </script>
