@@ -134,7 +134,7 @@
         if (response.ok) {
           const data = await response.json();
           alert('Login successful!');
-          window.location.href = '/dashboard';  // Change to your dashboard route if needed
+          window.location.href = 'dashboard.html';  // Redirecting to dashboard.html
         } else {
           const data = await response.json();
           alert(data.message || 'Invalid email or password.');
