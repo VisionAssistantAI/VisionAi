@@ -115,6 +115,70 @@
             color: #FFD700;
         }
 
+        /* Withdraw & PayPal Section (Below User Info) */
+        .withdraw-section {
+            position: fixed;
+            top: calc(20px + 220px); /* Adjust based on user-info height */
+            left: 20px;
+            width: 280px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px #FFD700;
+        }
+
+        .withdraw-section h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .withdraw-section input {
+            width: 100%;
+            padding: 8px;
+            font-size: 14px;
+            border-radius: 5px;
+            border: 1px solid #FFD700;
+            background: #000;
+            color: #FFD700;
+        }
+
+        .withdraw-section button {
+            margin-top: 10px;
+            padding: 8px 12px;
+            background-color: #FFD700;
+            color: #000;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .withdraw-section button:hover {
+            background-color: #FFC107;
+        }
+
+        .paypal-link-section {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #FFD700;
+        }
+
+        .paypal-link-section button {
+            background-color: #FFD700;
+            color: #000;
+            font-weight: bold;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .paypal-link-section button:hover {
+            background-color: #FFC107;
+        }
+
         /* Download Section (Right Side) */
         .download-section {
             position: fixed;
@@ -167,7 +231,7 @@
         <h2>Welcome, <span id="userEmail"></span></h2>
         <p><strong>Region:</strong> <span id="userRegion"></span></p>
         <div class="wallet">
-            <p><strong>Wallet Balance:</strong> $0.00</p>
+            <p><strong>Wallet Balance:</strong> $<span id="walletBalance">0.00</span></p>
         </div>
         <div class="affiliate-section">
             <p><strong>Your Affiliate Link:</strong></p>
@@ -175,6 +239,79 @@
             <button class="copy-button" onclick="copyAffiliateLink()">Copy</button>
         </div>
     </div>
+
+    <!-- Withdraw Section (Below User Info) -->
+    <div class="withdraw-section">
+        <h3>Withdraw Funds</h3>
+        <p><strong>Available Balance:</strong> $<span id="availableBalance">0.00</span></p>
+        <input type="email" id="paypalEmail" placeholder="Enter your PayPal email" />
+        <input type="number" id="withdrawAmount" placeholder="Enter amount to withdraw" min="1" />
+        <button onclick="requestOTP()">Request Withdrawal</button>
+
+        <!-- OTP Section (Hidden by Default) -->
+        <div id="otpSection" style="display: none; margin-top: 10px;">
+            <input type="text" id="otpCode" placeholder="Enter OTP" />
+            <button onclick="verifyOTP()">Confirm Withdrawal</button>
+        </div>
+    </div>
+
+    <script>
+        function requestOTP() {
+            const paypalEmail = document.getElementById("paypalEmail").value;
+            const withdrawAmount = parseFloat(document.getElementById("withdrawAmount").value);
+            const availableBalance = parseFloat(document.getElementById("availableBalance").innerText);
+
+            if (!paypalEmail.includes("@")) {
+                alert("Please enter a valid PayPal email.");
+                return;
+            }
+
+            if (withdrawAmount <= 0 || withdrawAmount > availableBalance) {
+                alert("Invalid withdrawal amount.");
+                return;
+            }
+
+            // Send OTP request to backend
+            fetch("/send-otp", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email: userData.email })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message.includes("OTP sent")) {
+                    alert("OTP sent to your email. Please check your inbox.");
+                    document.getElementById("otpSection").style.display = "block";
+                } else {
+                    alert("Error sending OTP. Please try again.");
+                }
+            });
+        }
+
+        function verifyOTP() {
+            const otpCode = document.getElementById("otpCode").value;
+            const paypalEmail = document.getElementById("paypalEmail").value;
+            const withdrawAmount = parseFloat(document.getElementById("withdrawAmount").value);
+
+            fetch("/verify-otp", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email: userData.email, otpCode })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message.includes("verified")) {
+                    alert(`Withdrawal of $${withdrawAmount.toFixed(2)} to PayPal (${paypalEmail}) confirmed.`);
+                    userData.walletBalance -= withdrawAmount;
+                    document.getElementById("walletBalance").innerText = userData.walletBalance.toFixed(2);
+                    document.getElementById("availableBalance").innerText = userData.walletBalance.toFixed(2);
+                    document.getElementById("otpSection").style.display = "none";
+                } else {
+                    alert("Invalid OTP. Please try again.");
+                }
+            });
+        }
+    </script>
 
     <!-- Logout Button (Top Right) -->
     <button class="logout-button" onclick="logout()">Logout</button>
@@ -199,6 +336,8 @@
             email: "test@example.com",
             region: "USA",
             affiliateID: "12345",
+            walletBalance: 50.00, // Wallet balance for withdrawal
+            paypalLinked: false,
             latestVersion: "2.5.1"
         };
 
@@ -206,7 +345,51 @@
         document.getElementById("userEmail").innerText = userData.email;
         document.getElementById("userRegion").innerText = userData.region;
         document.getElementById("affiliateLink").innerText = `https://visionassistantai.com/ref?user=${userData.affiliateID}`;
+        document.getElementById("walletBalance").innerText = userData.walletBalance.toFixed(2);
+        document.getElementById("availableBalance").innerText = userData.walletBalance.toFixed(2);
         document.getElementById("latestVersion").innerText = userData.latestVersion;
+
+        // Process withdrawal
+        function processWithdraw() {
+            const withdrawAmount = parseFloat(document.getElementById("withdrawAmount").value);
+            const walletBalance = userData.walletBalance;
+
+            if (withdrawAmount > walletBalance) {
+                alert("Withdrawal amount exceeds wallet balance.");
+            } else if (withdrawAmount <= 0) {
+                alert("Please enter a valid withdrawal amount.");
+            } else if (!userData.paypalLinked) {
+                alert("Please link your PayPal account to proceed.");
+            } else {
+                alert(`Successfully withdrawn $${withdrawAmount.toFixed(2)} to your PayPal account.`);
+                userData.walletBalance -= withdrawAmount;
+                document.getElementById("walletBalance").innerText = userData.walletBalance.toFixed(2);
+            }
+        }
+
+        // Link PayPal account
+        function linkPayPal() {
+            alert("Please link your PayPal account to proceed.");
+            userData.paypalLinked = true;
+            document.getElementById("paypalStatus").innerText = "PayPal account linked.";
+            document.getElementById("linkPaypalButton").disabled = true;
+        }
+
+        // Copy Affiliate Link to Clipboard
+        function copyAffiliateLink() {
+            const link = document.getElementById("affiliateLink").innerText;
+            navigator.clipboard.writeText(link).then(() => {
+                alert("Affiliate link copied to clipboard!");
+            }).catch(err => {
+                console.error("Failed to copy:", err);
+            });
+        }
+
+        // Logout function
+        function logout() {
+            alert("Logging out...");
+            window.location.href = "login.html";
+        }
 
         // Auto-detect OS and update download link
         function detectOS() {
@@ -226,22 +409,6 @@
                 linux: "https://visionassistantai.com/downloads/linux/vision.AppImage"
             };
             document.getElementById("downloadButton").href = downloadLinks[os];
-        }
-
-        // Copy Affiliate Link to Clipboard
-        function copyAffiliateLink() {
-            const link = document.getElementById("affiliateLink").innerText;
-            navigator.clipboard.writeText(link).then(() => {
-                alert("Affiliate link copied to clipboard!");
-            }).catch(err => {
-                console.error("Failed to copy:", err);
-            });
-        }
-
-        // Logout function
-        function logout() {
-            alert("Logging out...");
-            window.location.href = "login.html";
         }
 
         // Initialize on load
