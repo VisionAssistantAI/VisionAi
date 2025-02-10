@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VisionAI Assistant</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #FFFFFF;
+            color: #000000;
+            overflow: auto; /* Allow scrolling */
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('VISION_AI_2-removebg.png') no-repeat center center;
+            background-size: contain;
+            z-index: -1;
+        }
+
+        header {
+            position: fixed;
+            width: 100%;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 10px 20px;
+            box-sizing: border-box;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .button {
+            font-size: 16px;
+            font-weight: bold;
+            color: #000;
+            background-color: #FFD700;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover {
+            background-color: #FFC107;
+        }
+
+        .container {
+            text-align: center;
+            padding: 50px 20px;
+            margin-top: 20px; /* To prevent overlap with the fixed header */
+        }
+
+        .welcome-text {
+            font-size: 36px;
+            margin-bottom: 20px;
+            color: #FFD700;
+            background-color: rgba(0, 0, 0, 0.6);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .container p {
+            font-size: 18px;
+            margin-bottom: 40px;
+            color: #FFD700;
+            background-color: rgba(0, 0, 0, 0.6);
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .feature-section {
+            margin: 40px 0;
+            font-size: 18px;
+            line-height: 1.6;
+            background-color: rgba(0, 0, 0, 0.6);
+            color: #FFD700;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .feature-section h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #FFD700;
+        }
+
+        .cta {
+            font-size: 20px;
+            margin-top: 5px;
+            color: #FFD700;
+            background-color: rgba(0, 0, 0, 0.6);
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
+
+        .feature-block {
+            margin: 20px 0;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.6);
+            color: #FFD700;
+            border-radius: 10px;
+        }
+
+        .feature-block h3 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            color: #FFD700;
+        }
+
+        .feature-block ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .feature-block ul li {
+            margin: 10px 0;
+            font-size: 18px;
+        }
+
+        /* New styles for images */
+        .images-container {
+            margin-top: 20px; /* Add space between buttons and images */
+            text-align: center;
+        }
+
+        .images-container img {
+            width: 100%;
+            max-width: 1400px; /* Limit the max size of images */
+            margin-bottom: 20px; /* Add space between the images */
+            border-radius: 10px; /* Optional: add rounded corners */
+        }
+
+        /* Text above images */
+        .images-text {
+            background-color: rgba(0, 0, 0, 0.6);
+            color: #FFD700;
+            font-size: 24px;
+            padding: 10px 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        /* Special Section for Pricing and Affiliate Program */
+        .pricing-section {
+            background-color: rgba(0, 0, 0, 0.6);
+            color: #FFD700;
+            padding: 20px;
+            margin-top: 40px;
+            border-radius: 10px;
+        }
+
+        .pricing-section h3 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #FFD700;
+        }
+
+        .pricing-section p {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <!-- Register and Login Buttons -->
+        <div class="buttons">
+            <a href="register.html" class="button">Register</a>
+            <a href="login.html" class="button">Login</a> <!-- Updated link -->
+        </div>
+    </header>
+
+    <div class="images-container">
+        <!-- Text above images -->
+        <div class="images-text">Voice Assistant</div>
+        <img src="VoiceAssistant.PNG" alt="VoiceAssistant">
+        <div class="images-text">Private GPT</div>
+        <img src="PrivateGPT.PNG" alt="PrivateGPT">
+    </div>
+
+    <div class="container">
+        <div class="welcome-text">
+            <h1>Welcome to Vision Assistant AI</h1>
+            <p>Transform the way you interact with your computer using your voice</p>
+        </div>
+
+        <div class="feature-block">
+            <h3>Voice Commands to Control Vision</h3>
+            <p>With Vision, you can easily control your computer using simple voice commands:</p>
+            <ul>
+                <li><strong>Activate Vision:</strong> Say "VISION ON"</li>
+                <li><strong>Deactivate Vision:</strong> Say "VISION OVERRIDE"</li>
+                <li><strong>Shut down Vision:</strong> Say "VISION SHUTDOWN"</li>
+                <li><strong>Control the Mouse with Your Face:</strong> Say "VISION EYES ON"</li>
+                <li><strong>Open a Website:</strong> Say "OPEN" followed by the website name, e.g., "OPEN YouTube"</li>
+                <li><strong>Run Applications:</strong> Say "RUN" followed by the application name, e.g., "RUN Outlook"</li>
+                <li><strong>Create New Folders:</strong> Say "CREATE FOLDER" followed by the folder name, e.g., "CREATE FOLDER Vision"</li>
+                <li><strong>Control Windows:</strong> Say "MAXIMIZE" to maximize a window or "MINIMIZE" to minimize a window</li>
+                <li><strong>Search:</strong> Say "SEARCH FOR" followed by a search term, e.g., "SEARCH FOR Vision AI"</li>
+                <li><strong>Scroll:</strong> Say "PAGE UP" or "PAGE DOWN" to scroll the current page</li>
+                <li><strong>Control Volume:</strong> Say "VOLUME UP" or "VOLUME DOWN"</li>
+            </ul>
+        </div>
+
+        <div class="feature-block">
+            <h3>Control Your Computer with Your Face</h3>
+            <p>Vision enables you to use your face to control your computer mouse:</p>
+            <ul>
+                <li>Ensure your camera is on and working.</li>
+                <li>Position your face directly in front of the camera. This works best with a single display.</li>
+                <li>To click, simply blink a little slower. Upon eye opening, Vision will click where the mouse is positioned.</li>
+            </ul>
+        </div>
+
+        <div class="feature-block">
+            <h3>Private GPT Powered by Llama3</h3>
+            <p>Vision offers an offline GPT powered by Llama3. Your conversations are stored locally on your device, ensuring complete privacy:</p>
+            <ul>
+                <li>All chats are stored locally on your device and never sent online.</li>
+                <li>You can interact with the assistant privately, knowing that your data remains secure and confidential.</li>
+                <li>No internet connection is required to run the GPT model, ensuring fast and private interactions.</li>
+            </ul>
+        </div>
+
+        <!-- Pricing and Affiliate Section -->
+        <div class="pricing-section">
+            <h3>Get Vision for Just $20 (VAT Included)</h3>
+            <p>Experience the full power of Vision Assistant AI for only $20. This price includes VAT, so you can get started with no hidden costs!</p>
+            <p>Plus, each user gets a personal affiliate link at no extra charge. Share your link with others, and for every user who signs up using your link, you’ll earn $5 per successful registration!</p>
+            <p>Don’t miss out on this amazing opportunity to revolutionize your workflow and earn passive income!</p>
+            <div class="cta">
+                <p>Ready to get started? <a href="register.html" class="button">Sign Up Now</a></p>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register - VisionAI Assistant</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: url('VISION_AI_2-removebg.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: #FFD700;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      justify-content: center;
+      align-items: center;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('VISION_AI_2-removebg.png') no-repeat center center;
+      background-size: contain;
+      z-index: -1;
+    }
+    .container {
+      display: flex;
+      width: 90%;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .form-container, .payment-container {
+      background: rgba(0, 0, 0, 0.8);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #FFD700;
+      width: 40%;
+    }
+    .form-container {
+      text-align: left;
+    }
+    .payment-container {
+      text-align: right;
+      margin-left: auto;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 10px;
+      font-size: 14px;
+      border: 1px solid #FFD700;
+      border-radius: 5px;
+      background: #000;
+      color: #FFD700;
+    }
+    .form-group input:focus, .form-group select:focus {
+      outline: none;
+      border-color: #FFC107;
+    }
+    .button {
+      width: 90%;
+      padding: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #000;
+      background-color: #FFD700;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .button:hover {
+      background-color: #FFC107;
+    }
+    .button:disabled {
+      background-color: #666;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Registration Block -->
+    <div class="form-container">
+      <h2>Register</h2>
+      <form id="registrationForm">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="Enter your email" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" placeholder="Enter your password" required>
+        </div>
+        <div class="form-group">
+          <label for="region">Region</label>
+          <select id="region" name="region" required>
+            <option value="North America">North America</option>
+            <option value="Europe">Europe</option>
+            <option value="Asia">Asia</option>
+            <option value="Africa">Africa</option>
+            <option value="South America">South America</option>
+            <option value="Oceania">Oceania</option>
+            <option value="South Africa">South Africa</option>
+          </select>
+        </div>
+
+        <!-- Security Questions -->
+        <div class="form-group">
+          <label for="security1">Security Question 1</label>
+          <select id="security1" name="question1" required>
+            <option value="What is your mother’s maiden name?">What is your mother’s maiden name?</option>
+            <option value="What was the name of your first school?">What was the name of your first school?</option>
+            <option value="What city were you born in?">What city were you born in?</option>
+          </select>
+          <input type="text" id="answer1" name="answer1" placeholder="Your Answer" required>
+        </div>
+
+        <div class="form-group">
+          <label for="security2">Security Question 2</label>
+          <select id="security2" name="question2" required>
+            <option value="What was the name of your first pet?">What was the name of your first pet?</option>
+            <option value="What is your favorite book?">What is your favorite book?</option>
+            <option value="Who was your childhood hero?">Who was your childhood hero?</option>
+          </select>
+          <input type="text" id="answer2" name="answer2" placeholder="Your Answer" required>
+        </div>
+
+        <div class="form-group">
+          <label for="security3">Security Question 3</label>
+          <select id="security3" name="question3" required>
+            <option value="What was the make of your first car?">What was the make of your first car?</option>
+            <option value="What was your dream job as a child?">What was your dream job as a child?</option>
+            <option value="What is the name of your favorite teacher?">What is the name of your favorite teacher?</option>
+          </select>
+          <input type="text" id="answer3" name="answer3" placeholder="Your Answer" required>
+        </div>
+
+        <button type="submit" class="button">Register</button>
+      </form>
+    </div>
+
+    <!-- Payment Block -->
+    <div class="payment-container">
+      <h2>Payment</h2>
+      <p>Please complete the payment to activate your account.</p>
+      <div class="form-group">
+        <label for="payment-method">Payment Method</label>
+        <select id="payment-method" name="payment-method">
+          <option value="Credit Card">Credit Card</option>
+        </select>
+        <script async src="https://content.payfast.io/widgets/moretyme/widget.min.js?amount={{product.selected_or_first_available_variant.price | divided_by: 100}}" type="text/javascript"></script>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Form handling
+    document.getElementById('registrationForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const button = form.querySelector('button');
+      
+      try {
+        button.disabled = true;
+        button.textContent = 'Processing...';
+
+        const formData = {
+          email: form.email.value,
+          password: form.password.value,
+          region: form.region.value,
+          answers: [
+            { question: form.question1.value, answer: form.answer1.value },
+            { question: form.question2.value, answer: form.answer2.value },
+            { question: form.question3.value, answer: form.answer3.value }
+          ]
+        };
+
+        // Send the data to the backend (Render)
+        const response = await fetch('https://visionassistantai.com/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
+
+        if (response.ok) {
+          alert('Account created successfully!');
+          window.location.href = '/';
+        } else {
+          const error = await response.json();
+          alert(error.message || 'Registration failed. Please try again.');
+        }
+      } catch (error) {
+        alert('Registration failed. Please try again.');
+      } finally {
+        button.disabled = false;
+        button.textContent = 'Register';
+      }
+    });
+  </script>
+</body>
+</html>
