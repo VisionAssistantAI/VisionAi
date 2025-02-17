@@ -145,6 +145,12 @@
           <input type="text" id="answer3" name="answer3" placeholder="Your Answer" required>
         </div>
 
+        <!-- New field for referral code -->
+        <div class="form-group">
+          <label for="referral">Affiliate Link (Who referred you?)</label>
+          <input type="text" id="referral" name="referral" placeholder="Enter referral code (if any)">
+        </div>
+
         <button type="submit" class="button">Register</button>
       </form>
     </div>
@@ -164,21 +170,16 @@
       }
     });
 
-    // Generate a unique affiliate code for the user (e.g., an 8-character alphanumeric code)
-    function generateAffiliateCode(length = 8) {
-      const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-      let result = '';
-      for (let i = 0; i < length; i++) {
-        result += characters.charAt(Math.floor(Math.random() * characters.length));
-      }
-      return result;
+    // Generate an 8-digit affiliate code (as a numeric string)
+    function generateAffiliateCode() {
+      return Math.floor(10000000 + Math.random() * 90000000).toString();
     }
 
     // When the registration form is submitted:
     // 1. Generate the affiliate code and add it to the registration data.
-    // 2. Store the registration data (including the affiliate code) in localStorage.
-    // 3. Redirect the user to the Paystack payment page.
-    // (On successful payment, the login page will retrieve this data and push it to your server.)
+    // 2. Capture any referral code entered.
+    // 3. Save the data locally for later submission upon successful payment.
+    // 4. Redirect to the Paystack payment page.
     document.getElementById("registrationForm").addEventListener("submit", (e) => {
       e.preventDefault();
       const form = e.target;
@@ -186,7 +187,6 @@
       button.disabled = true;
       button.textContent = "Processing...";
 
-      // Gather the registration data and generate an affiliate code.
       const registrationData = {
         email: form.email.value,
         password: form.password.value,
@@ -196,15 +196,16 @@
           { question: form.question2.value, answer: form.answer2.value },
           { question: form.question3.value, answer: form.answer3.value }
         ],
-        affiliateCode: generateAffiliateCode()  // Unique code generated for this user.
+        affiliateCode: generateAffiliateCode(), // Auto-generated 8-digit code for this user
+        referralCode: form.referral.value || ""      // Referral code entered (if any)
       };
 
-      // Save the data locally (to be pushed to your server upon successful payment)
+      // Save the complete registration data locally
       localStorage.setItem("registrationData", JSON.stringify(registrationData));
 
       alert("Registration data saved. You will now be redirected to payment. Complete the payment to proceed.");
 
-      // Redirect to your Paystack payment link.
+      // Redirect to Paystack payment page
       window.location.href = "https://paystack.com/pay/5cj2731-86";
     });
   </script>
