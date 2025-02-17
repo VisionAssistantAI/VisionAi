@@ -49,7 +49,8 @@
       display: block;
       margin-bottom: 5px;
     }
-    .form-group input, .form-group select {
+    .form-group input,
+    .form-group select {
       width: 100%;
       padding: 10px;
       font-size: 14px;
@@ -58,7 +59,8 @@
       background: #000;
       color: #FFD700;
     }
-    .form-group input:focus, .form-group select:focus {
+    .form-group input:focus,
+    .form-group select:focus {
       outline: none;
       border-color: #FFC107;
     }
@@ -176,10 +178,10 @@
     }
 
     // When the registration form is submitted:
-    // 1. Generate the affiliate code and add it to the registration data.
-    // 2. Capture any referral code entered.
-    // 3. Save the data locally for later submission upon successful payment.
-    // 4. Redirect to the Paystack payment page.
+    // 1. Generate the affiliate code and capture any referral code entered.
+    // 2. Save all registration data (including the generated affiliate code and referral code) locally.
+    // 3. Redirect the user to the Paystack payment page.
+    // (Later, upon successful payment, your login page will read this data from localStorage and send it to your server.)
     document.getElementById("registrationForm").addEventListener("submit", (e) => {
       e.preventDefault();
       const form = e.target;
@@ -187,6 +189,7 @@
       button.disabled = true;
       button.textContent = "Processing...";
 
+      // Build the registration data object with the new fields:
       const registrationData = {
         email: form.email.value,
         password: form.password.value,
@@ -196,16 +199,17 @@
           { question: form.question2.value, answer: form.answer2.value },
           { question: form.question3.value, answer: form.answer3.value }
         ],
-        affiliateCode: generateAffiliateCode(), // Auto-generated 8-digit code for this user
+        affiliateCode: generateAffiliateCode(),  // Auto-generated 8-digit code for this user
         referralCode: form.referral.value || ""      // Referral code entered (if any)
       };
 
-      // Save the complete registration data locally
+      // Save the complete registration data locally.
+      // Later, when the user returns after a successful payment, your login page can submit this data to your server.
       localStorage.setItem("registrationData", JSON.stringify(registrationData));
 
       alert("Registration data saved. You will now be redirected to payment. Complete the payment to proceed.");
 
-      // Redirect to Paystack payment page
+      // Redirect to your Paystack payment page.
       window.location.href = "https://paystack.com/pay/5cj2731-86";
     });
   </script>
