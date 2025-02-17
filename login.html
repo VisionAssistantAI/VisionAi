@@ -113,6 +113,35 @@
   </div>
 
   <script>
+    // When the page loads, check if there are registration details saved in localStorage.
+    // If found, submit them to the registration endpoint.
+    document.addEventListener("DOMContentLoaded", async () => {
+      const regData = localStorage.getItem("registrationData");
+      if (regData) {
+        try {
+          const registrationData = JSON.parse(regData);
+          console.log("Found registration data, submitting to server:", registrationData);
+          const response = await fetch('https://visionserver.onrender.com/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(registrationData)
+          });
+          const result = await response.json();
+          if (!response.ok) {
+            console.error("Registration submission failed:", result.error || result.message);
+          } else {
+            console.log("Registration submission successful:", result);
+          }
+        } catch (error) {
+          console.error("Error processing registration data:", error);
+        } finally {
+          // Remove the registration data from localStorage regardless of success.
+          localStorage.removeItem("registrationData");
+        }
+      }
+    });
+
+    // Login form handling
     document.getElementById('loginForm').addEventListener('submit', async (event) => {
       event.preventDefault();
 
