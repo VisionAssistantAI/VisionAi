@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Register - VisionAI Assistant</title>
   <style>
     body {
@@ -97,11 +97,11 @@
       <form id="registrationForm">
         <div class="form-group">
           <label for="email">Email</label>
-          <input type="email" id="email" name="email" placeholder="Enter your email" required>
+          <input type="email" id="email" name="email" placeholder="Enter your email" required />
         </div>
         <div class="form-group">
           <label for="password">Password</label>
-          <input type="password" id="password" name="password" placeholder="Enter your password" required>
+          <input type="password" id="password" name="password" placeholder="Enter your password" required />
         </div>
         <div class="form-group">
           <label for="region">Region</label>
@@ -124,7 +124,7 @@
             <option value="What was the name of your first school?">What was the name of your first school?</option>
             <option value="What city were you born in?">What city were you born in?</option>
           </select>
-          <input type="text" id="answer1" name="answer1" placeholder="Your Answer" required>
+          <input type="text" id="answer1" name="answer1" placeholder="Your Answer" required />
         </div>
 
         <div class="form-group">
@@ -134,7 +134,7 @@
             <option value="What is your favorite book?">What is your favorite book?</option>
             <option value="Who was your childhood hero?">Who was your childhood hero?</option>
           </select>
-          <input type="text" id="answer2" name="answer2" placeholder="Your Answer" required>
+          <input type="text" id="answer2" name="answer2" placeholder="Your Answer" required />
         </div>
 
         <div class="form-group">
@@ -144,13 +144,13 @@
             <option value="What was your dream job as a child?">What was your dream job as a child?</option>
             <option value="What is the name of your favorite teacher?">What is the name of your favorite teacher?</option>
           </select>
-          <input type="text" id="answer3" name="answer3" placeholder="Your Answer" required>
+          <input type="text" id="answer3" name="answer3" placeholder="Your Answer" required />
         </div>
 
         <!-- New field for referral code -->
         <div class="form-group">
           <label for="referral">Affiliate Link (Who referred you?)</label>
-          <input type="text" id="referral" name="referral" placeholder="Enter referral code (if any)">
+          <input type="text" id="referral" name="referral" placeholder="Enter referral code (if any)" />
         </div>
 
         <button type="submit" class="button">Register</button>
@@ -172,16 +172,20 @@
       }
     });
 
-    // Generate an 8-digit affiliate code (as a numeric string)
-    function generateAffiliateCode() {
-      return Math.floor(10000000 + Math.random() * 90000000).toString();
+    // Generate an 8-character affiliate code (using letters, digits, and symbols)
+    function generateAffiliateCode(length = 8) {
+      const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+      let result = '';
+      for (let i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * characters.length));
+      }
+      return result;
     }
 
     // When the registration form is submitted:
     // 1. Generate the affiliate code and capture any referral code entered.
     // 2. Save all registration data (including the generated affiliate code and referral code) locally.
     // 3. Redirect the user to the Paystack payment page.
-    // (Later, upon successful payment, your login page will read this data from localStorage and send it to your server.)
     document.getElementById("registrationForm").addEventListener("submit", (e) => {
       e.preventDefault();
       const form = e.target;
@@ -199,7 +203,7 @@
           { question: form.question2.value, answer: form.answer2.value },
           { question: form.question3.value, answer: form.answer3.value }
         ],
-        affiliateCode: generateAffiliateCode(),  // Auto-generated 8-digit code for this user
+        affiliateCode: generateAffiliateCode(),  // Auto-generated 8-character code for this user (e.g. "urdE32!D")
         referralCode: form.referral.value || ""      // Referral code entered (if any)
       };
 
