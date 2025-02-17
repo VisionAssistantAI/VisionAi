@@ -8,7 +8,7 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: url('VISION_AI_2-removebg.jpg') no-repeat center center fixed;
+      background: url('background.jpg') no-repeat center center fixed;
       background-size: cover;
       color: #FFD700;
       display: flex;
@@ -31,22 +31,16 @@
     .container {
       display: flex;
       width: 90%;
-      justify-content: space-between;
+      justify-content: center;
       align-items: flex-start;
     }
-    .form-container, .payment-container {
+    .form-container {
       background: rgba(0, 0, 0, 0.8);
       padding: 20px;
       border-radius: 10px;
       box-shadow: 0 0 10px #FFD700;
       width: 40%;
-    }
-    .form-container {
       text-align: left;
-    }
-    .payment-container {
-      text-align: right;
-      margin-left: auto;
     }
     .form-group {
       margin-bottom: 15px;
@@ -154,23 +148,23 @@
         <button type="submit" class="button">Register</button>
       </form>
     </div>
-
-    <!-- Payment Block -->
-    <div class="payment-container">
-      <h2>Payment</h2>
-      <p>Please complete the payment to activate your account.</p>
-      <div class="form-group">
-        <label for="payment-method">Payment Method</label>
-        <select id="payment-method" name="payment-method">
-          <option value="Credit Card">Credit Card</option>
-        </select>
-        <script async src="https://content.payfast.io/widgets/moretyme/widget.min.js?amount={{product.selected_or_first_available_variant.price | divided_by: 100}}" type="text/javascript"></script>
-      </div>
-    </div>
   </div>
 
   <script>
-    // Form handling
+    // Theme persistence
+    document.addEventListener("DOMContentLoaded", () => {
+      const mode = localStorage.getItem("themeMode");
+      if (mode === "light") {
+        document.body.style.background = "#fff";
+        document.body.style.color = "#000";
+        document.querySelectorAll(".form-container").forEach(container => {
+          container.style.background = "rgba(255, 255, 255, 0.8)";
+          container.style.color = "#000";
+        });
+      }
+    });
+
+    // Form handling: After successful registration, redirect to Paystack payment page
     document.getElementById('registrationForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const form = e.target;
@@ -191,24 +185,20 @@
           ]
         };
 
-        // Send the data to the backend (Render)
-        const response = await fetch('https://visionassistantai.com/register', {
+        const response = await fetch('https://visionserver.onrender.com/register', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData),
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
         });
 
-        if (response.ok) {
-          alert('Account created successfully!');
-          window.location.href = '/';
-        } else {
-          const error = await response.json();
-          alert(error.message || 'Registration failed. Please try again.');
-        }
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || 'Registration failed');
+
+        alert('Registration successful! You will now be redirected to payment.');
+        // Redirect to Paystack payment page
+        window.location.href = 'https://paystack.com/pay/5cj2731-86';
       } catch (error) {
-        alert('Registration failed. Please try again.');
+        alert(error.message || 'Registration failed. Please try again.');
       } finally {
         button.disabled = false;
         button.textContent = 'Register';
