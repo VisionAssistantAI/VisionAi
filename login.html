@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login - VisionAI Assistant</title>
   <style>
     body {
@@ -17,7 +17,6 @@
       justify-content: center;
       align-items: center;
     }
-
     body::before {
       content: "";
       position: fixed;
@@ -29,7 +28,6 @@
       background-size: contain;
       z-index: -1;
     }
-
     .form-container {
       background: rgba(0, 0, 0, 0.8);
       padding: 20px;
@@ -38,17 +36,14 @@
       width: 350px;
       text-align: center;
     }
-
     .form-group {
       margin-bottom: 15px;
       text-align: left;
     }
-
     .form-group label {
       display: block;
       margin-bottom: 5px;
     }
-
     .form-group input {
       width: 100%;
       padding: 10px;
@@ -58,12 +53,10 @@
       background: #000;
       color: #FFD700;
     }
-
     .form-group input:focus {
       outline: none;
       border-color: #FFC107;
     }
-
     .button {
       width: 100%;
       padding: 10px;
@@ -76,11 +69,9 @@
       cursor: pointer;
       transition: background-color 0.3s;
     }
-
     .button:hover {
       background-color: #FFC107;
     }
-
     .forgot-password {
       margin-top: 10px;
       display: block;
@@ -89,7 +80,6 @@
       font-size: 14px;
       cursor: pointer;
     }
-
     .forgot-password:hover {
       text-decoration: underline;
     }
@@ -113,8 +103,8 @@
   </div>
 
   <script>
-    // When the page loads, check if there are registration details saved in localStorage.
-    // If found, submit them to the registration endpoint.
+    // When the page loads, check if there is registration data saved in localStorage
+    // and optionally submit it to the registration endpoint.
     document.addEventListener("DOMContentLoaded", async () => {
       const regData = localStorage.getItem("registrationData");
       if (regData) {
@@ -135,13 +125,12 @@
         } catch (error) {
           console.error("Error processing registration data:", error);
         } finally {
-          // Remove the registration data from localStorage regardless of success.
           localStorage.removeItem("registrationData");
         }
       }
     });
 
-    // Login form handling
+    // Login form handling: On successful login, save the user's email to localStorage.
     document.getElementById('loginForm').addEventListener('submit', async (event) => {
       event.preventDefault();
 
@@ -163,7 +152,10 @@
         if (response.ok) {
           const data = await response.json();
           alert('Login successful!');
-          window.location.href = 'dashboard.html';  
+          // Save user's email (and auth token if available) to localStorage
+          localStorage.setItem('userEmail', data.client.email);
+          // localStorage.setItem('authToken', data.token); // Uncomment if your API returns a token
+          window.location.href = 'dashboard.html';
         } else {
           const data = await response.json();
           alert(data.message || 'Invalid email or password.');
