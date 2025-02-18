@@ -64,11 +64,11 @@
       background-color: #FFC107;
     }
     /* Referral Code Section */
-    .affiliate-section {
+    .referral-section {
       margin-top: 10px;
       text-align: center;
     }
-    .affiliate-code {
+    .referral-code {
       background: #000;
       color: #FFD700;
       padding: 5px;
@@ -186,16 +186,15 @@
   <!-- User Info (Top Left) -->
   <div class="user-info">
     <h2>Welcome, <span id="userEmail"></span></h2>
-    <p><strong>Region:</strong> <span id="userRegion"></span></p>
-    <p><strong>Total Referrals:</strong> <span id="referralsCount">0</span></p>
+    <p><strong>Region:</strong> <span id="region"></span></p>
     <div class="wallet">
       <p><strong>Account Balance:</strong> $<span id="walletBalance">0.00</span></p>
     </div>
-    <div class="affiliate-section">
+    <div class="referral-section">
       <p><strong>Your Referral Code:</strong></p>
-      <div class="affiliate-code" id="affiliateLink"></div>
+      <div class="referralCode" id="referralCode"></div>
       <br />
-      <button class="copy-button" onclick="copyAffiliateCode()">Copy</button>
+      <button class="copy-button" onclick="copyreferralCode()">Copy</button>
     </div>
   </div>
 
@@ -257,9 +256,9 @@
         userData = result.client;
 
         // Update the UI with the fetched user data.
-        document.getElementById("userEmail").innerText = userData.email;
-        document.getElementById("userRegion").innerText = userData.region;
-        document.getElementById("affiliateLink").innerText = userData.referralCode;
+        document.getElementById("email").innerText = userData.email;
+        document.getElementById("region").innerText = userData.region;
+        document.getElementById("referralCode").innerText = userData.referralCode;
 
         // Fetch the referral count using the user's referral code.
         if (userData.referralCode) {
@@ -298,8 +297,8 @@
     });
 
     // Copy Referral Code to Clipboard.
-    function copyAffiliateCode() {
-      const code = document.getElementById("affiliateCode").innerText;
+    function copyreferralCode() {
+      const code = document.getElementById("referralCode").innerText;
       navigator.clipboard.writeText(code).then(() => {
         alert("Referral code copied to clipboard!");
       }).catch(err => {
