@@ -186,8 +186,8 @@
   <!-- User Info (Top Left) -->
   <div class="user-info">
     <h2>Welcome, <span id="email"></span></h2>
-    <!-- Centered Region text -->
     <p style="text-align: center;"><strong>Region:</strong> <span id="region"></span></p>
+    <p style="text-align: center;"><strong>Total Referrals:</strong> <span id="referralsCount">0</span></p>
     <div class="wallet">
       <p><strong>Account Balance:</strong> $<span id="walletBalance">0.00</span></p>
     </div>
@@ -266,7 +266,7 @@
         document.getElementById("region").innerText = userData.region;
         document.getElementById("referralCode").innerText = userData.referralCode;
 
-        // Fetch the referral count using the user's referral code to calculate wallet balance.
+        // Fetch the referral count using the user's referral code.
         if (userData.referralCode) {
           try {
             const rResponse = await fetch('https://visionserver.onrender.com/api/referrals?code=' + encodeURIComponent(userData.referralCode), {
@@ -275,17 +275,20 @@
             if (rResponse.ok) {
               const rData = await rResponse.json();
               const referralsCount = rData.count || 0;
+              document.getElementById("referralsCount").innerText = referralsCount;
               // Calculate the account balance (e.g., $5 bonus per referral).
               const bonusRate = 5;
               const balance = referralsCount * bonusRate;
               document.getElementById("walletBalance").innerText = balance.toFixed(2);
               document.getElementById("availableBalance").innerText = balance.toFixed(2);
             } else {
+              document.getElementById("referralsCount").innerText = 0;
               document.getElementById("walletBalance").innerText = "0.00";
               document.getElementById("availableBalance").innerText = "0.00";
             }
           } catch (rErr) {
             console.error("Error fetching referrals count:", rErr);
+            document.getElementById("referralsCount").innerText = 0;
             document.getElementById("walletBalance").innerText = "0.00";
             document.getElementById("availableBalance").innerText = "0.00";
           }
