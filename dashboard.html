@@ -208,7 +208,7 @@
       <p><strong>Wallet Balance:</strong> $<span id="walletBalance">0.00</span></p>
     </div>
     <div class="affiliate-section">
-      <p><strong>Your Affiliate Code:</strong></p>
+      <p><strong>Your Referral Code:</strong></p>
       <div class="affiliate-code" id="affiliateLink"></div>
       <br />
       <button class="copy-button" onclick="copyAffiliateCode()">Copy</button>
@@ -273,12 +273,17 @@
       const data = await fetchUserData();
       if (data) {
         userData = data;
+        // Update the UI using the correct property names from your Mongo document.
         document.getElementById("userEmail").innerText = userData.email;
         document.getElementById("userRegion").innerText = userData.region;
-        document.getElementById("affiliateLink").innerText = userData.affiliateCode;
-        document.getElementById("walletBalance").innerText = userData.walletBalance.toFixed(2);
-        document.getElementById("availableBalance").innerText = userData.walletBalance.toFixed(2);
-        document.getElementById("latestVersion").innerText = userData.latestVersion;
+        // Note: Changing from affiliateCode to referralCode.
+        document.getElementById("affiliateLink").innerText = userData.referralCode;
+        // Set wallet balance and latest version if provided, else use defaults.
+        document.getElementById("walletBalance").innerText = 
+          userData.walletBalance ? userData.walletBalance.toFixed(2) : "0.00";
+        document.getElementById("availableBalance").innerText = 
+          userData.walletBalance ? userData.walletBalance.toFixed(2) : "0.00";
+        document.getElementById("latestVersion").innerText = userData.latestVersion || "1.0.0";
       } else {
         // If user data couldn't be retrieved, redirect to login.
         alert("User data not found. Please log in again.");
@@ -286,11 +291,11 @@
       }
     });
 
-    // Copy Affiliate Code to Clipboard
+    // Copy Referral Code to Clipboard
     function copyAffiliateCode() {
       const code = document.getElementById("affiliateLink").innerText;
       navigator.clipboard.writeText(code)
-        .then(() => alert("Affiliate code copied to clipboard!"))
+        .then(() => alert("Referral code copied to clipboard!"))
         .catch(err => console.error("Failed to copy:", err));
     }
 
@@ -345,9 +350,12 @@
       .then(data => {
         if (data.message && data.message.includes("verified")) {
           alert(`Withdrawal of $${withdrawAmount.toFixed(2)} to PayPal (${paypalEmail}) confirmed.`);
-          userData.walletBalance -= withdrawAmount;
-          document.getElementById("walletBalance").innerText = userData.walletBalance.toFixed(2);
-          document.getElementById("availableBalance").innerText = userData.walletBalance.toFixed(2);
+          // Update wallet balance if applicable.
+          if (userData.walletBalance) {
+            userData.walletBalance -= withdrawAmount;
+            document.getElementById("walletBalance").innerText = userData.walletBalance.toFixed(2);
+            document.getElementById("availableBalance").innerText = userData.walletBalance.toFixed(2);
+          }
           document.getElementById("otpSection").style.display = "none";
         } else {
           alert("Invalid OTP. Please try again.");
