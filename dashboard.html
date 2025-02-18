@@ -299,7 +299,7 @@
 
     // Copy Referral Code to Clipboard.
     function copyAffiliateCode() {
-      const code = document.getElementById("affiliateLink").innerText;
+      const code = document.getElementById("affiliateCode").innerText;
       navigator.clipboard.writeText(code).then(() => {
         alert("Referral code copied to clipboard!");
       }).catch(err => {
