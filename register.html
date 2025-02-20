@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Register - VisionAI Assistant</title>
   <style>
+    /* Base Styles */
     body {
       margin: 0;
       font-family: Arial, sans-serif;
@@ -13,8 +14,8 @@
       color: #FFD700;
       display: flex;
       flex-direction: column;
-      height: 100vh;
-      justify-content: center;
+      min-height: 100vh; /* Allows the page to grow vertically */
+      justify-content: flex-start; /* Aligns content at the top */
       align-items: center;
     }
     body::before {
@@ -28,22 +29,30 @@
       background-size: contain;
       z-index: -1;
     }
+
+    /* Container for the form */
     .container {
-      display: flex;
-      width: 90%;
-      justify-content: center;
-      align-items: flex-start;
+      width: 100%;
+      max-width: 600px; /* Constrains the form to 600px max width */
+      margin: 40px auto; /* Centers and adds top/bottom spacing */
+      padding: 20px;
+      box-sizing: border-box;
     }
+
+    /* Form Container */
     .form-container {
       background: rgba(0, 0, 0, 0.8);
       padding: 20px;
       border-radius: 10px;
       box-shadow: 0 0 10px #FFD700;
-      width: 40%;
+      width: 100%;
       text-align: left;
     }
+
+    /* Form Groups */
     .form-group {
       margin-bottom: 15px;
+      position: relative; /* For positioning the eye icon */
     }
     .form-group label {
       display: block;
@@ -64,8 +73,11 @@
       outline: none;
       border-color: #FFC107;
     }
+
+    /* Register Button */
     .button {
-      width: 90%;
+      display: block;
+      width: 100%;
       padding: 10px;
       font-size: 16px;
       font-weight: bold;
@@ -75,10 +87,7 @@
       border-radius: 5px;
       cursor: pointer;
       transition: background-color 0.3s;
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
+      margin-top: 15px; /* Spacing above the button */
     }
     .button:hover {
       background-color: #FFC107;
@@ -99,10 +108,14 @@
           <label for="email">Email</label>
           <input type="email" id="email" name="email" placeholder="Enter your email" required />
         </div>
+
         <div class="form-group">
           <label for="password">Password</label>
           <input type="password" id="password" name="password" placeholder="Enter your password" required />
+          <!-- Eye Icon -->
+          <span id="togglePassword" style="position: absolute; right: 10px; top: 38px; cursor: pointer;">👁️</span>
         </div>
+
         <div class="form-group">
           <label for="region">Region</label>
           <select id="region" name="region" required>
@@ -193,7 +206,7 @@
       button.disabled = true;
       button.textContent = "Processing...";
 
-      // Build the registration data object with the new fields:
+      // Build the registration data object
       const registrationData = {
         email: form.email.value,
         password: form.password.value,
@@ -203,18 +216,26 @@
           { question: form.question2.value, answer: form.answer2.value },
           { question: form.question3.value, answer: form.answer3.value }
         ],
-        affiliateCode: generateAffiliateCode(),  // Auto-generated 8-character code for this user (e.g. "urdE32!D")
-        referralCode: form.referral.value || ""      // Referral code entered (if any)
+        affiliateCode: generateAffiliateCode(),
+        referralCode: form.referral.value || ""
       };
 
-      // Save the complete registration data locally.
-      // Later, when the user returns after a successful payment, your login page can submit this data to your server.
+      // Save the complete registration data locally
       localStorage.setItem("registrationData", JSON.stringify(registrationData));
 
       alert("Registration data saved. You will now be redirected to payment. Complete the payment to proceed.");
 
-      // Redirect to your Paystack payment page.
+      // Redirect to your Paystack payment page
       window.location.href = "https://paystack.com/pay/5cj2731-86";
+    });
+
+    // Toggle password visibility functionality
+    document.getElementById('togglePassword').addEventListener('click', function () {
+      const passwordInput = document.getElementById('password');
+      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordInput.setAttribute('type', type);
+      // Toggle icon between open 👁️ and closed 🙈
+      this.textContent = type === 'password' ? '👁️' : '🙈';
     });
   </script>
 </body>
