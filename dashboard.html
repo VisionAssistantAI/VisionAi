@@ -238,9 +238,11 @@
     document.addEventListener("DOMContentLoaded", async () => {
       const token = localStorage.getItem("jwtToken");
       if (!token) {
+        console.error("No JWT token found. Redirecting to login.");
         window.location.href = "login.html";
         return;
       }
+      
       try {
         // Verify token via /token/check endpoint.
         const checkResponse = await fetch('https://visionserver.onrender.com/token/check', {
@@ -250,9 +252,12 @@
           }
         });
         if (!checkResponse.ok) {
+          const errData = await checkResponse.json();
+          console.error("Token check failed:", errData);
           throw new Error("Token verification failed");
         }
         const checkResult = await checkResponse.json();
+        console.log("Token verified. Expires in:", checkResult.tokenValidFor);
         const clientEmail = checkResult.email;
 
         // Fetch user data using the email from the token.
