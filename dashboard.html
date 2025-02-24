@@ -234,33 +234,19 @@
     // Global variable to store user data.
     let userData = {};
 
-    // On DOM load, verify JWT token and fetch user data.
+    // On DOM load, retrieve token and client email from localStorage.
+    // This updated script does not check for token expiration.
     document.addEventListener("DOMContentLoaded", async () => {
       const token = localStorage.getItem("jwtToken");
-      if (!token) {
-        console.error("No JWT token found. Redirecting to login.");
+      const clientEmail = localStorage.getItem("clientEmail");
+      if (!token || !clientEmail) {
+        console.error("Missing token or client email. Redirecting to login.");
         window.location.href = "login.html";
         return;
       }
       
       try {
-        // Verify token via /token/check endpoint.
-        const checkResponse = await fetch('https://visionserver.onrender.com/token/check', {
-          method: 'GET',
-          headers: {
-            'Authorization': 'Bearer ' + token
-          }
-        });
-        if (!checkResponse.ok) {
-          const errData = await checkResponse.json();
-          console.error("Token check failed:", errData);
-          throw new Error("Token verification failed");
-        }
-        const checkResult = await checkResponse.json();
-        console.log("Token verified. Expires in:", checkResult.tokenValidFor);
-        const clientEmail = checkResult.email;
-
-        // Fetch user data using the email from the token.
+        // Fetch user data using the client email stored in localStorage.
         const response = await fetch('https://visionserver.onrender.com/api/user?email=' + encodeURIComponent(clientEmail), {
           method: 'GET'
         });
@@ -269,12 +255,12 @@
         }
         const result = await response.json();
         userData = result.client;
-
+        
         // Update the UI with the fetched user data.
         document.getElementById("email").innerText = userData.email;
         document.getElementById("region").innerText = userData.region;
         document.getElementById("referralCode").innerText = userData.referralCode;
-
+        
         // Fetch the referral count using the user's referral code.
         if (userData.referralCode) {
           try {
@@ -303,10 +289,8 @@
           }
         }
       } catch (err) {
-        console.error("Error verifying token or fetching user data:", err);
-        alert("Session expired or invalid. Please login again.");
-        localStorage.removeItem("jwtToken");
-        window.location.href = "login.html";
+        console.error("Error fetching user data:", err);
+        alert("Error fetching user data.");
       }
     });
 
@@ -376,9 +360,10 @@
       });
     }
 
-    // Logout function: clear the token and redirect to login.
+    // Logout function: clear token and client email from localStorage and redirect to login.
     function logout() {
       localStorage.removeItem("jwtToken");
+      localStorage.removeItem("clientEmail");
       window.location.href = "login.html";
     }
 
