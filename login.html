@@ -169,7 +169,7 @@
           const data = await response.json();
           alert('Login successful!');
           // Store the received JWT token in localStorage
-          localStorage.setItem('jwtToken', data.token);
+          localStorage.setItem('clientEmail', data.client.email);
           // Redirect to dashboard
           window.location.href = 'dashboard.html';
         } else {
