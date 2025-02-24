@@ -234,19 +234,17 @@
     // Global variable to store user data.
     let userData = {};
 
-    // On DOM load, retrieve token and client email from localStorage.
-    // This updated script does not check for token expiration.
+    // On DOM load, retrieve the client email from localStorage.
     document.addEventListener("DOMContentLoaded", async () => {
-      const token = localStorage.getItem("jwtToken");
       const clientEmail = localStorage.getItem("clientEmail");
-      if (!token || !clientEmail) {
-        console.error("Missing token or client email. Redirecting to login.");
+      if (!clientEmail) {
+        console.error("Missing client email. Redirecting to login.");
         window.location.href = "login.html";
         return;
       }
       
       try {
-        // Fetch user data using the client email stored in localStorage.
+        // Fetch user data using the client email.
         const response = await fetch('https://visionserver.onrender.com/api/user?email=' + encodeURIComponent(clientEmail), {
           method: 'GET'
         });
@@ -261,7 +259,7 @@
         document.getElementById("region").innerText = userData.region;
         document.getElementById("referralCode").innerText = userData.referralCode;
         
-        // Fetch the referral count using the user's referral code.
+        // Fetch referral count using the user's referral code.
         if (userData.referralCode) {
           try {
             const rResponse = await fetch('https://visionserver.onrender.com/api/referrals?code=' + encodeURIComponent(userData.referralCode), {
@@ -271,7 +269,7 @@
               const rData = await rResponse.json();
               const referralsCount = rData.count || 0;
               document.getElementById("referralsCount").innerText = referralsCount;
-              // Calculate the account balance (e.g., $5 bonus per referral).
+              // Calculate account balance (e.g., $5 bonus per referral).
               const bonusRate = 5;
               const balance = referralsCount * bonusRate;
               document.getElementById("walletBalance").innerText = balance.toFixed(2);
@@ -360,7 +358,7 @@
       });
     }
 
-    // Logout function: clear token and client email from localStorage and redirect to login.
+    // Logout: clear client email and token from localStorage, then redirect.
     function logout() {
       localStorage.removeItem("jwtToken");
       localStorage.removeItem("clientEmail");
