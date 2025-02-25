@@ -110,7 +110,7 @@
       return params.get(param);
     }
 
-    // On DOM load, also check if there's registration data and submit it (unchanged).
+    // On DOM load, check if there's registration data and submit it.
     document.addEventListener("DOMContentLoaded", async () => {
       const regData = localStorage.getItem("registrationData");
       if (regData) {
@@ -149,7 +149,7 @@
       let endpoint = 'https://visionserver.onrender.com/login';
       let payload = { email, password };
 
-      // If a payment reference exists, use the token/generate endpoint.
+      // If a payment reference exists, adjust endpoint and payload.
       if (paymentReference) {
         endpoint = 'https://visionserver.onrender.com/token/generate';
         payload.transactionRef = paymentReference;
@@ -165,15 +165,16 @@
           body: JSON.stringify(payload)
         });
 
+        const data = await response.json();
+
         if (response.ok) {
-          const data = await response.json();
           alert('Login successful!');
-          // Store the received JWT token in localStorage
-          localStorage.setItem("clientEmail", data.client.email);
+          // Safely store the email—use the returned client email if available; otherwise, fallback to the entered email.
+          const clientEmail = (data.client && data.client.email) ? data.client.email : email;
+          localStorage.setItem("clientEmail", clientEmail);
           // Redirect to dashboard
           window.location.href = 'dashboard.html';
         } else {
-          const data = await response.json();
           alert(data.message || 'Invalid email or password.');
         }
       } catch (error) {
@@ -182,7 +183,7 @@
       }
     });
 
-    // Toggle password visibility functionality for login page
+    // Toggle password visibility functionality for login page.
     document.getElementById('togglePassword').addEventListener('click', function () {
       const passwordInput = document.getElementById('password');
       const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
